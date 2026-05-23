@@ -1,0 +1,176 @@
+services:
+
+  # ---------------------------------------------------------------------------
+  # Base de datos — una instancia PostgreSQL, seis bases de datos separadas
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/create-databases.sh:/docker-entrypoint-initdb.d/create-databases.sh
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ---------------------------------------------------------------------------
+  # API Gateway — único punto de entrada externo
+  # ---------------------------------------------------------------------------
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - "${GATEWAY_PORT:-8000}:8000"
+    environment:
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      ALGORITHM: HS256
+      AUTH_SERVICE_URL: http://auth-service:8000
+      ACADEMIC_SERVICE_URL: http://academic-service:8000
+      INTERNSHIP_SERVICE_URL: http://internship-service:8000
+      EVALUATION_SERVICE_URL: http://evaluation-service:8000
+      DOCUMENT_SERVICE_URL: http://document-service:8000
+      NOTIFICATION_SERVICE_URL: http://notification-service:8000
+    volumes:
+      - ./api-gateway:/app
+    depends_on:
+      - auth-service
+      - academic-service
+      - internship-service
+      - evaluation-service
+      - document-service
+      - notification-service
+    networks:
+      - backend
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Microservicios de dominio
+  # ---------------------------------------------------------------------------
+  auth-service:
+    build:
+      context: ./auth-service
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/auth_db
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES:-480}
+    volumes:
+      - ./auth-service:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: unless-stopped
+
+  academic-service:
+    build:
+      context: ./academic-service
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/academic_db
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+    volumes:
+      - ./academic-service:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: unless-stopped
+
+  internship-service:
+    build:
+      context: ./internship-service
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/internship_db
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      AUTH_SERVICE_URL: http://auth-service:8000
+      ACADEMIC_SERVICE_URL: http://academic-service:8000
+      NOTIFICATION_SERVICE_URL: http://notification-service:8000
+    volumes:
+      - ./internship-service:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: unless-stopped
+
+  evaluation-service:
+    build:
+      context: ./evaluation-service
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/evaluation_db
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      INTERNSHIP_SERVICE_URL: http://internship-service:8000
+      NOTIFICATION_SERVICE_URL: http://notification-service:8000
+    volumes:
+      - ./evaluation-service:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: unless-stopped
+
+  document-service:
+    build:
+      context: ./document-service
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/document_db
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      INTERNSHIP_SERVICE_URL: http://internship-service:8000
+      NOTIFICATION_SERVICE_URL: http://notification-service:8000
+      STORAGE_PATH: /app/storage
+      MAX_FILE_SIZE_KB: 1024
+      MAX_PHOTO_SIZE_KB: 256
+    volumes:
+      - ./document-service:/app
+      - file_storage:/app/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: unless-stopped
+
+  notification-service:
+    build:
+      context: ./notification-service
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/notification_db
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-key-change-in-production}
+      AUTH_SERVICE_URL: http://auth-service:8000
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-noreply@practicas.cl}
+    volumes:
+      - ./notification-service:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - backend
+    restart: unless-stopped
+
+# -----------------------------------------------------------------------------
+# Red interna y volúmenes
+# -----------------------------------------------------------------------------
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  file_storage:

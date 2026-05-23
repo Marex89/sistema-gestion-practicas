@@ -154,6 +154,7 @@ classDiagram
 
 ## Diagrama de Clases — Modelos de Dominio por Servicio
 
+### En caso de no renderizarse, ver entity_class_diagram.png
 ```mermaid
 classDiagram
     namespace auth_service {

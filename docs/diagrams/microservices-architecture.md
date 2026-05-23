@@ -17,6 +17,29 @@
 | [`../adr/ADR-002-api-gateway.md`](../adr/ADR-002-api-gateway.md) | Decisión: API Gateway |
 | [`../adr/ADR-003-database-per-service.md`](../adr/ADR-003-database-per-service.md) | Decisión: base de datos por servicio |
 | [`../adr/ADR-004-inter-service-communication.md`](../adr/ADR-004-inter-service-communication.md) | Decisión: comunicación inter-servicio |
+| [`../adr/ADR-005-rubric-justification.md`](../adr/ADR-005-rubric-justification.md) | Índice de ADRs de justificación |
+| [`../adr/ADR-006-auth-service-boundary.md`](../adr/ADR-006-auth-service-boundary.md) | Justificación de `auth-service` |
+| [`../adr/ADR-007-academic-service-boundary.md`](../adr/ADR-007-academic-service-boundary.md) | Justificación de `academic-service` |
+| [`../adr/ADR-008-internship-service-boundary.md`](../adr/ADR-008-internship-service-boundary.md) | Justificación de `internship-service` |
+| [`../adr/ADR-009-evaluation-service-boundary.md`](../adr/ADR-009-evaluation-service-boundary.md) | Justificación de `evaluation-service` |
+| [`../adr/ADR-010-document-service-boundary.md`](../adr/ADR-010-document-service-boundary.md) | Justificación de `document-service` |
+| [`../adr/ADR-011-notification-service-boundary.md`](../adr/ADR-011-notification-service-boundary.md) | Justificación de `notification-service` |
+| [`../adr/ADR-012-service-layering.md`](../adr/ADR-012-service-layering.md) | Estructura interna en capas |
+| [`../adr/ADR-013-no-inheritance-strategy.md`](../adr/ADR-013-no-inheritance-strategy.md) | Estrategia sin herencia |
+
+---
+
+## Evaluación frente a la rúbrica
+
+| Criterio | Estado actual | Observación |
+| :--- | :--- | :--- |
+| Diagrama de clases con los microservicios | Alto | `class-diagram.md` identifica servicios, operaciones y límites. |
+| Relaciones, composición y herencia | Alto | `relationships.md` explica composición, asociación y la decisión de no usar herencia. |
+| Separación de responsabilidades | Alto | Cada servicio tiene un único contexto de dominio. |
+| Estructura de microservicio | Alto | `microservice-structure.md` define capas internas y su rol. |
+| Alta cohesión | Alto | Los servicios agrupan funcionalidades que cambian juntas. |
+| Bajo acoplamiento | Alto | BD separada por servicio, UUIDs y REST entre servicios. |
+| Justificación de decisiones | Alto | `ADR-001` a `ADR-013` documentan alternativas, descarte y selección por tema y por servicio. |
 
 ---
 

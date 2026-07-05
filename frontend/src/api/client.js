@@ -53,7 +53,16 @@ const realApi = {
   decodeToken,
 
   // ── Auth ──────────────────────────────────────────────────────────────────
-  login(username, password) {
+  // AuthContext siempre invoca api.login(credentials) con un único objeto,
+  // tanto para login normal ({ username, password }) como para el acceso
+  // rápido demo ({ demoRole }). El backend real solo sabe autenticar con
+  // RUT + contraseña, así que el modo demo no está disponible aquí.
+  login({ username, password, demoRole } = {}) {
+    if (!username && demoRole) {
+      return Promise.reject(
+        new Error('El acceso rápido demo no está disponible: ingresa RUT y contraseña.'),
+      )
+    }
     const body = new URLSearchParams({ username, password })
     return fetch(`${API_BASE}/auth/login`, {
       method: 'POST',

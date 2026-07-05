@@ -53,6 +53,26 @@ services:
     restart: unless-stopped
 
   # ---------------------------------------------------------------------------
+  # Frontend — React + Vite, consume el backend a través del API Gateway
+  # ---------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    environment:
+      VITE_USE_MOCK: "false"
+      VITE_API_URL: http://localhost:${GATEWAY_PORT:-8000}
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - api-gateway
+    networks:
+      - backend
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
   # Microservicios de dominio
   # ---------------------------------------------------------------------------
   auth-service:

@@ -84,7 +84,7 @@ def create_user(
 @router.get("/", response_model=UserList)
 def list_users(
     skip: int = Query(0, ge=0),
-    limit: int = Query(50, ge=1, le=200),
+    limit: int = Query(50, ge=1, le=500),
     rol: str | None = Query(None),
     db: Session = Depends(get_db),
     _: CurrentUser = Depends(require_role("COORDINADOR")),

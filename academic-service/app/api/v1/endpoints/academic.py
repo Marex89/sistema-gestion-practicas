@@ -41,7 +41,7 @@ def list_sedes(
 def create_sede(
     data: SedeCreate,
     db: Session = Depends(get_db),
-    _user: dict = Depends(require_roles("COORDINADOR", "JEFE_CARRERA", "ADMIN")),
+    _user: dict = Depends(require_roles("COORDINADOR", "JEFE_CARRERA", "SUPER_ADMIN")),
 ):
     return crud.create_sede(db, data)
 
@@ -65,7 +65,7 @@ def update_sede(
     sede_id: uuid.UUID,
     data: SedeUpdate,
     db: Session = Depends(get_db),
-    _user: dict = Depends(require_roles("COORDINADOR", "JEFE_CARRERA", "ADMIN")),
+    _user: dict = Depends(require_roles("COORDINADOR", "JEFE_CARRERA", "SUPER_ADMIN")),
 ):
     sede = crud.get_sede_by_id(db, sede_id)
     if not sede:
@@ -79,7 +79,7 @@ def update_sede(
 def deactivate_sede(
     sede_id: uuid.UUID,
     db: Session = Depends(get_db),
-    _user: dict = Depends(require_roles("JEFE_CARRERA", "ADMIN")),
+    _user: dict = Depends(require_roles("JEFE_CARRERA", "SUPER_ADMIN")),
 ):
     sede = crud.get_sede_by_id(db, sede_id)
     if not sede:
@@ -112,7 +112,7 @@ def list_carreras(
 def create_carrera(
     data: CarreraCreate,
     db: Session = Depends(get_db),
-    _user: dict = Depends(require_roles("COORDINADOR", "JEFE_CARRERA", "ADMIN")),
+    _user: dict = Depends(require_roles("COORDINADOR", "JEFE_CARRERA", "SUPER_ADMIN")),
 ):
     return crud.create_carrera(db, data)
 
@@ -136,7 +136,7 @@ def update_carrera(
     carrera_id: uuid.UUID,
     data: CarreraUpdate,
     db: Session = Depends(get_db),
-    _user: dict = Depends(require_roles("COORDINADOR", "JEFE_CARRERA", "ADMIN")),
+    _user: dict = Depends(require_roles("COORDINADOR", "JEFE_CARRERA", "SUPER_ADMIN")),
 ):
     carrera = crud.get_carrera_by_id(db, carrera_id)
     if not carrera:
@@ -150,7 +150,7 @@ def update_carrera(
 def deactivate_carrera(
     carrera_id: uuid.UUID,
     db: Session = Depends(get_db),
-    _user: dict = Depends(require_roles("JEFE_CARRERA", "ADMIN")),
+    _user: dict = Depends(require_roles("JEFE_CARRERA", "SUPER_ADMIN")),
 ):
     carrera = crud.get_carrera_by_id(db, carrera_id)
     if not carrera:
@@ -183,7 +183,7 @@ def list_centros(
 def create_centro(
     data: CentroPracticaCreate,
     db: Session = Depends(get_db),
-    _user: dict = Depends(require_roles("COORDINADOR", "JEFE_CARRERA", "ADMIN")),
+    _user: dict = Depends(require_roles("COORDINADOR", "JEFE_CARRERA", "SUPER_ADMIN")),
 ):
     return crud.create_centro(db, data)
 
@@ -207,7 +207,7 @@ def update_centro(
     centro_id: uuid.UUID,
     data: CentroPracticaUpdate,
     db: Session = Depends(get_db),
-    _user: dict = Depends(require_roles("COORDINADOR", "JEFE_CARRERA", "ADMIN")),
+    _user: dict = Depends(require_roles("COORDINADOR", "JEFE_CARRERA", "SUPER_ADMIN")),
 ):
     centro = crud.get_centro_by_id(db, centro_id)
     if not centro:
@@ -221,7 +221,7 @@ def update_centro(
 def deactivate_centro(
     centro_id: uuid.UUID,
     db: Session = Depends(get_db),
-    _user: dict = Depends(require_roles("JEFE_CARRERA", "ADMIN")),
+    _user: dict = Depends(require_roles("JEFE_CARRERA", "SUPER_ADMIN")),
 ):
     centro = crud.get_centro_by_id(db, centro_id)
     if not centro:

@@ -87,7 +87,7 @@ async def upload_material_apoyo(
     carrera_id: Optional[uuid.UUID] = Form(None),
     nombre: str = Form(...),
     db: Session = Depends(get_db),
-    user: dict = Depends(require_roles("COORDINADOR", "ADMIN")),
+    user: dict = Depends(require_roles("COORDINADOR", "SUPER_ADMIN")),
 ):
     if not validate_format(file.content_type or "", ALLOWED_DOCUMENT_FORMATS):
         raise HTTPException(

@@ -15,14 +15,18 @@ cd sistema-gestion-practicas
 cp .env.example .env
 # set SECRET_KEY and database credentials
 
-# 3. Start all services
+# 3. Start all services (backend + frontend)
 docker compose up --build
 
-# 4. Check gateway health
+# 4. Seed demo users (solo la primera vez, DB nueva sin usuarios)
+docker compose exec api-gateway python seed_demo_users.py
+
+# 5. Check gateway health
 curl http://localhost:8000/health
 ```
 
 Gateway: `http://localhost:8000`.
+Frontend: `http://localhost:5173` (ver `frontend/README.md` para detalles y modo mock).
 Each service includes a dedicated README with endpoint documentation and examples (English):
 - `auth-service/README.md`
 - `academic-service/README.md`
@@ -43,6 +47,7 @@ Each service includes a dedicated README with endpoint documentation and example
 ├── evaluation-service/
 ├── document-service/
 ├── notification-service/
+├── frontend/
 ├── docs/
 ├── tests/
 ├── docker-compose.yml

@@ -47,7 +47,7 @@ async def enviar_notificacion(
 async def enviar_alerta_manual(
     data: AlertaManualCreate,
     db: Session = Depends(get_db),
-    user: dict = Depends(require_roles("COORDINADOR", "ADMIN")),
+    user: dict = Depends(require_roles("COORDINADOR", "SUPER_ADMIN")),
 ):
     """El coordinador_id se extrae del header X-User-Id inyectado por el gateway."""
     alerta = crud.create_alerta_manual(db, data, coordinador_id=user["user_id"])
@@ -64,6 +64,6 @@ async def enviar_alerta_manual(
 def historial_notificaciones(
     alumno_id: uuid.UUID,
     db: Session = Depends(get_db),
-    user: dict = Depends(require_roles("COORDINADOR", "ADMIN")),
+    user: dict = Depends(require_roles("COORDINADOR", "SUPER_ADMIN")),
 ):
     return crud.list_notificaciones_by_user(db, alumno_id)

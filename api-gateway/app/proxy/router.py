@@ -111,6 +111,22 @@ async def proxy_auth(
 
 
 @router.api_route(
+    "/users/{path:path}",
+    methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
+)
+async def proxy_users(
+    request: Request,
+    path: str,
+    user: dict = Depends(verify_jwt_middleware),
+) -> Response:
+    """Los usuarios viven en auth-service, pero el frontend los consume en /users
+    (sin el prefijo /auth) por lo que necesitan su propia ruta de proxy."""
+    return await _proxy_request(
+        request, settings.auth_service_url, f"api/v1/users/{path}", user
+    )
+
+
+@router.api_route(
     "/academic/{path:path}",
     methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
 )

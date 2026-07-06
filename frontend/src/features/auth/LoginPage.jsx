@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import LoginLayout from '../../layouts/LoginLayout'
 import InputField from '../../components/ui/InputField'
 import { getHomePath } from '../../utils/routes'
+import { isMockMode } from '../../api/client'
 
 const DEMO_ACCOUNTS = [
   {
@@ -115,27 +116,29 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="login-demo">
-          <p className="login-demo-title">Acceso rápido demo</p>
-          <div className="login-demo-grid">
-            {DEMO_ACCOUNTS.map((account) => (
-              <button
-                key={account.role}
-                type="button"
-                className="login-demo-card"
-                onClick={() => handleDemo(account.role)}
-                disabled={submitting}
-              >
-                <span className="login-demo-role">{account.label}</span>
-                <strong>{account.name}</strong>
-                <span className="login-demo-desc">{account.description}</span>
-              </button>
-            ))}
+        {isMockMode && (
+          <div className="login-demo">
+            <p className="login-demo-title">Acceso rápido demo</p>
+            <div className="login-demo-grid">
+              {DEMO_ACCOUNTS.map((account) => (
+                <button
+                  key={account.role}
+                  type="button"
+                  className="login-demo-card"
+                  onClick={() => handleDemo(account.role)}
+                  disabled={submitting}
+                >
+                  <span className="login-demo-role">{account.label}</span>
+                  <strong>{account.name}</strong>
+                  <span className="login-demo-desc">{account.description}</span>
+                </button>
+              ))}
+            </div>
+            <p className="login-demo-note">
+              También puedes escribir &quot;alumno&quot; en el usuario para ingresar como alumno
+            </p>
           </div>
-          <p className="login-demo-note">
-            También puedes escribir &quot;alumno&quot; en el usuario para ingresar como alumno
-          </p>
-        </div>
+        )}
       </div>
     </LoginLayout>
   )

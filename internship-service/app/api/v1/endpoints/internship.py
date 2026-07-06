@@ -22,7 +22,7 @@ router = APIRouter(prefix="/internships", tags=["Internships"])
 def create_practica(
     data: PracticaCreate,
     db: Session = Depends(get_db),
-    user: dict = Depends(require_roles("COORDINADOR", "ADMIN")),
+    user: dict = Depends(require_roles("COORDINADOR", "SUPER_ADMIN")),
 ):
     """Crea una nueva práctica. Solo COORDINADOR o ADMIN."""
     coordinador_id = uuid.UUID(user["user_id"])
@@ -74,7 +74,7 @@ def update_estado(
     practica_id: uuid.UUID,
     data: PracticaUpdate,
     db: Session = Depends(get_db),
-    _user: dict = Depends(require_roles("COORDINADOR", "JEFE_CARRERA", "ADMIN")),
+    _user: dict = Depends(require_roles("COORDINADOR", "JEFE_CARRERA", "SUPER_ADMIN")),
 ):
     practica = crud.get_practica(db, practica_id)
     if not practica:
@@ -99,7 +99,7 @@ def asignar_docente(
     practica_id: uuid.UUID,
     data: PracticaUpdate,
     db: Session = Depends(get_db),
-    _user: dict = Depends(require_roles("COORDINADOR", "ADMIN")),
+    _user: dict = Depends(require_roles("COORDINADOR", "SUPER_ADMIN")),
 ):
     practica = crud.get_practica(db, practica_id)
     if not practica:

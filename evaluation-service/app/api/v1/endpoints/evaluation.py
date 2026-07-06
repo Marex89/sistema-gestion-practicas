@@ -36,7 +36,7 @@ router = APIRouter()
 def crear_evaluacion_desempeno(
     data: EvaluacionDesempenoCreate,
     db: Session = Depends(get_db),
-    user: dict = Depends(require_roles("EMPLEADOR", "COORDINADOR", "ADMIN")),
+    user: dict = Depends(require_roles("EMPLEADOR", "COORDINADOR", "SUPER_ADMIN")),
 ):
     return crud.create_evaluacion_desempeno(db, data)
 
@@ -120,7 +120,7 @@ def cerrar_evaluacion_desempeno(
 def crear_evaluacion_informe(
     data: EvaluacionInformeCreate,
     db: Session = Depends(get_db),
-    user: dict = Depends(require_roles("DOCENTE", "COORDINADOR", "ADMIN")),
+    user: dict = Depends(require_roles("DOCENTE", "COORDINADOR", "SUPER_ADMIN")),
 ):
     return crud.create_evaluacion_informe(db, data)
 
@@ -216,7 +216,7 @@ def obtener_acta_final(
 def validar_acta_final(
     practica_id: uuid.UUID,
     db: Session = Depends(get_db),
-    user: dict = Depends(require_roles("COORDINADOR", "ADMIN")),
+    user: dict = Depends(require_roles("COORDINADOR", "SUPER_ADMIN")),
 ):
     acta = crud.get_or_create_acta_final(db, practica_id)
     if acta.nota_final is None:
@@ -264,6 +264,6 @@ def actualizar_parametros(
     carrera_id: uuid.UUID,
     data: ParametroEvaluacionUpdate,
     db: Session = Depends(get_db),
-    user: dict = Depends(require_roles("COORDINADOR", "ADMIN")),
+    user: dict = Depends(require_roles("COORDINADOR", "SUPER_ADMIN")),
 ):
     return crud.create_or_update_parametros(db, carrera_id, data)

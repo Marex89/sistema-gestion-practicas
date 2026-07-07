@@ -1,6 +1,7 @@
 # Sistema de Gestión de Prácticas Profesionales
 ## Link Video
 https://drive.google.com/file/d/18bAG5Z8QQZ5w7XtAFj-lakXR5JRy8jcN/view?usp=sharing
+
 Sistema de microservicios para la gestión de prácticas profesionales académicas: postulación, seguimiento, evaluación y
 documentación, con un frontend en React y backend en FastAPI.
  
